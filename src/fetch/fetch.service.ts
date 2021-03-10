@@ -26,6 +26,7 @@ export class FetchService {
 
     async fetchtpexOTCStock(){
         let response = null;
+        //         https://www.tpex.org.tw/web/stock/aftertrading/otc_quotes_no1430/stk_wn1430_result.php?l=zh-tw&d=110/03/10&se=EW&_=1615392204588
         let url = `https://www.tpex.org.tw/web/stock/aftertrading/otc_quotes_no1430/stk_wn1430_result.php?l=zh-tw&d=110/03/09&se=EW`;
         let headers= {
             'Accept-Encoding':'gzip, deflate, br',

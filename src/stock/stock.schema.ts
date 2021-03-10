@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 
-export type CatDocument = Stock & Document;
+export type StockDocument = Stock & Document;
 
 export class Stock{
 
@@ -25,6 +25,7 @@ export class Stock{
     ma60: number;
     ma120: number;
     avg: number;
+    stockType: string;
 }
 
 export const StockSchema = new mongoose.Schema({
@@ -47,4 +48,5 @@ export const StockSchema = new mongoose.Schema({
     ma60: Number,
     ma120: Number,
     avg: Number,
+    stockType: String,
   },{collection:'stocks'});
