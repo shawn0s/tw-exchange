@@ -10,7 +10,8 @@ export class Stock{
     stockDate: string;
     stockName: string;
     stockShares: number; //成交股數
-    volume: number; //成交筆數
+    volume: number; //成交股數
+    count: number; //成交筆數
     amount: number; //成交金額
     date: Date;
     open: number;

@@ -44,6 +44,10 @@ export class FetchService {
         //     rejectUnauthorized: false
         // })
         let result= await this.httpService.get(url,{headers:headers }).toPromise();
+
+
+
+        
         //.subscribe(res => logger.debug(JSON.stringify(res)) );
     //    logger.debug(JSON.stringify(result.data));
        return result.data;
