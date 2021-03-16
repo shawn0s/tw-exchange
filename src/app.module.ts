@@ -8,6 +8,10 @@ import { StockModule } from './stock/stock.module';
 
 @Module({
   imports: [
+    // MongooseModule.forRoot('mongodb://localhost/nest',{
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    // }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

@@ -6,7 +6,7 @@ import { FetchModule } from 'src/fetch/fetch.module';
 
 @Module({
   imports:[
-    MongooseModule.forFeature([{ name: Stock.name, schema: StockSchema }]),
+    MongooseModule.forFeature([{ name: 'Stock', schema: StockSchema }]),
     FetchModule,
   ],
   providers: [StockService]

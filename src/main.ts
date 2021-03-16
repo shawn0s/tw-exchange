@@ -5,12 +5,15 @@ import { StockService } from './stock/stock.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  
   // const fetchService = app.get(FetchService);
   // await fetchService.fetchtpexOTCStock();
-
+  let startdate= `2021-03-15`//new Date()toISOString().substring(0,10);
   const stockService = app.get(StockService);
-  stockService.syncOtcStock();
+  await stockService.syncOtcStock(startdate).then(async res=>{
+    await stockService.syncOTC3instiAmount(startdate)
+  });
+  
   await app.close();
 }
 bootstrap();

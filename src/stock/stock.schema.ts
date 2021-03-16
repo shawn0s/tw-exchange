@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 export type StockDocument = Stock & Document;
 
 export class Stock{
-
+    constructor(){}
     id: string;
     stockNo: string;
     stockDate: string;
@@ -26,6 +26,20 @@ export class Stock{
     ma120: number;
     avg: number;
     stockType: string;
+    excludeD: boolean;
+    excludeR: boolean;
+    foreignBuy: number;
+    foreignSell: number;
+    foreignTotal: number;
+    foreignTotalAmount: number;
+    dealerBuy: number;
+    dealerSell: number;
+    dealerTotal: number;
+    dealerTotalAmount: number;
+    fundBuy: number;
+    fundSell: number;
+    fundTotal: number;
+    fundTotalAmount: number;
 }
 
 export const StockSchema = new mongoose.Schema({
@@ -49,4 +63,18 @@ export const StockSchema = new mongoose.Schema({
     ma120: Number,
     avg: Number,
     stockType: String,
+    excludeD: Boolean,
+    excludeR: Boolean,
+    foreignBuy: Number,
+    foreignSell: Number,
+    foreignTotal: Number,
+    foreignTotalAmount: Number,
+    dealerBuy: Number,
+    dealerSell: Number,
+    dealerTotal: Number,
+    dealerTotalAmount: Number,
+    fundBuy: Number,
+    fundSell: Number,
+    fundTotal: Number,
+    fundTotalAmount: Number,
   },{collection:'stocks'});
