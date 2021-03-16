@@ -13,10 +13,11 @@ async function bootstrap() {
 
   await stockService.syncStock(startdate).then(async res=>{
     await stockService.syncStock3instiAmount(startdate)
-  });;
-  // await stockService.syncOtcStock(startdate).then(async res=>{
-  //   await stockService.syncOTC3instiAmount(startdate)
-  // });
+  });
+  
+  await stockService.syncOtcStock(startdate).then(async res=>{
+    await stockService.syncOTC3instiAmount(startdate)
+  });
   
   await app.close();
 }

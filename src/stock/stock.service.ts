@@ -167,9 +167,9 @@ export class StockService {
         let apiUri = `https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date=${reqDate}&type=ALLBUT0999&_=${new Date().getTime()}`;
         // `https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&se=EW&t=D&d=${reqDate}&_=${new Date().getTime()}`;
         logger.log(apiUri);
-        // let fetchData = await this.fetchService.fetchData(apiUri);
+        let fetchData = await this.fetchService.fetchData(apiUri);
         // logger.log(JSON.stringify(fetchData.data));
-        let { data9} = stockData;
+        let { data9} = fetchData.data;
 
         let stocks: Array<Stock> = data9.map(data => {
             let stock: Stock= new Stock();
@@ -218,9 +218,9 @@ export class StockService {
         let apiUri = `https://www.twse.com.tw/fund/T86?response=json&date=${reqDate}&selectType=ALLBUT0999&_=1615908749350`;
         // `https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&se=EW&t=D&d=${reqDate}&_=${new Date().getTime()}`;
         logger.log(apiUri);
-        // let fetchData = await this.fetchService.fetchData(apiUri);
+        let fetchData = await this.fetchService.fetchData(apiUri);
         // logger.log(JSON.stringify(fetchData.data));
-        let { data } = stockT86;
+        let { data } = fetchData.data;
         let stMap = new Map();
         let stocks: Array<StockDocument> = await this.stockModel.find({ stockDate: reqDate, stockType:'twse' });
         for (const stock of stocks) {
