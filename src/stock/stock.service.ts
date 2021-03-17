@@ -168,47 +168,52 @@ export class StockService {
         // `https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&se=EW&t=D&d=${reqDate}&_=${new Date().getTime()}`;
         logger.log(apiUri);
         let fetchData = await this.fetchService.fetchData(apiUri);
-        // logger.log(JSON.stringify(fetchData.data));
-        let { data9} = fetchData.data;
+        logger.log(JSON.stringify(fetchData.data));
+        if(fetchData.data!=null){
+          if('很抱歉，沒有符合條件的資料!' === fetchData.data.stat){
+            return 'false'
+          }
+          let { data9} = fetchData.data;
+          let stocks: Array<Stock> = data9.map(data => {
+              let stock: Stock= new Stock();
+              stock.stockNo = data[0];
+              stock.stockName = data[1];
+              stock.volume = this.stringToFloat(data[2]);
+              stock.count = this.stringToFloat(data[3]);
+              stock.amount = this.stringToFloat(data[4]);
+              stock.open = this.stringToFloat(data[5]);
+              stock.high = this.stringToFloat(data[6]);
+              stock.low = this.stringToFloat(data[7]);
+              stock.close = this.stringToFloat(data[8]);
+              let negative = data[9].match(/green/i)? -1: 1;
+              // if(negative){
+              //     logger.log(`stock ${stock.stockNo} ${ stock.stockName }`+ negative);
+              // }
+              
+              stock.change = this.stringToFloat(data[10]) * negative;
+              // stock.stockShares = this.stringToFloat(data[14]);
+              stock.date = new Date(parseInt(strArr[0]),parseInt(strArr[1])-1,parseInt(strArr[2]),13,30);
+              stock.stockDate = reqDate;
+              stock.diff = Math.round((stock.high- stock.low)*100)/100;
+              stock.stockType ='twse';
+              stock.peRatio =this.stringToFloat(data[15]);
+              stock.avg = Math.round(((stock.high+stock.low)/2)*100)/100;
+              // logger.log(`stock ${JSON.stringify(stock)}`);
+              return stock;
+          })
 
-        let stocks: Array<Stock> = data9.map(data => {
-            let stock: Stock= new Stock();
-            stock.stockNo = data[0];
-            stock.stockName = data[1];
-            stock.volume = this.stringToFloat(data[2]);
-            stock.count = this.stringToFloat(data[3]);
-            stock.amount = this.stringToFloat(data[4]);
-            stock.open = this.stringToFloat(data[5]);
-            stock.high = this.stringToFloat(data[6]);
-            stock.low = this.stringToFloat(data[7]);
-            stock.close = this.stringToFloat(data[8]);
-            let negative = data[9].match(/green/i)? -1: 1;
-            // if(negative){
-            //     logger.log(`stock ${stock.stockNo} ${ stock.stockName }`+ negative);
-            // }
-            
-            stock.change = this.stringToFloat(data[10]) * negative;
-            // stock.stockShares = this.stringToFloat(data[14]);
-            stock.date = new Date(parseInt(strArr[0]),parseInt(strArr[1])-1,parseInt(strArr[2]),13,30);
-            stock.stockDate = reqDate;
-            stock.diff = Math.round((stock.high- stock.low)*100)/100;
-            stock.stockType ='twse';
-            stock.peRatio =this.stringToFloat(data[15]);
-            stock.avg = Math.round(((stock.high+stock.low)/2)*100)/100;
-            // logger.log(`stock ${JSON.stringify(stock)}`);
-            return stock;
-        })
-
-        await this.stockModel.bulkWrite(stocks.map(stock =>({
-            updateOne: {
-              filter: { stockNo: stock.stockNo, stockDate: stock.stockDate },
-              update: stock,
-              upsert: true
-            }
-          })))
-          .then(res => {
-              logger.debug(JSON.stringify(res))
-            }).catch(e=> logger.error(e));
+          await this.stockModel.bulkWrite(stocks.map(stock =>({
+              updateOne: {
+                filter: { stockNo: stock.stockNo, stockDate: stock.stockDate },
+                update: stock,
+                upsert: true
+              }
+            })))
+            .then(res => {
+                logger.debug(JSON.stringify(res))
+              }).catch(e=> logger.error(e));
+        }
+        
     }
 
     async syncStock3instiAmount(startDate: string){
@@ -220,52 +225,58 @@ export class StockService {
         logger.log(apiUri);
         let fetchData = await this.fetchService.fetchData(apiUri);
         // logger.log(JSON.stringify(fetchData.data));
-        let { data } = fetchData.data;
-        let stMap = new Map();
-        let stocks: Array<StockDocument> = await this.stockModel.find({ stockDate: reqDate, stockType:'twse' });
-        for (const stock of stocks) {
-            stMap.set(stock.stockNo, stock);
-        }
+        if(fetchData.data != null){
+          if('很抱歉，沒有符合條件的資料!' === fetchData.data.stat){
+            return 'false'
+          }
+          let { data } = fetchData.data;
+          let stMap = new Map();
+          let stocks: Array<StockDocument> = await this.stockModel.find({ stockDate: reqDate, stockType:'twse' });
+          for (const stock of stocks) {
+              stMap.set(stock.stockNo, stock);
+          }
 
-        let stockList: Array<Stock> = data.filter(rawdata=> stMap.has(rawdata[0])).map(rawdata=>{
-            let stock :StockDocument = stMap.get(rawdata[0]);
-            stock.foreignBuy =this.stringToFloat(rawdata[2]);
-            stock.foreignSell = this.stringToFloat(rawdata[3]);
-            stock.foreignTotal = this.stringToFloat(rawdata[4]);
-            stock.foreignTotalAmount= Math.round((stock.foreignTotal*stock.avg)*100)/100;
-            stock.dealerBuy=this.stringToFloat(rawdata[12])+ this.stringToFloat(rawdata[15]);
-            stock.dealerSell=this.stringToFloat(rawdata[13])+ this.stringToFloat(rawdata[16]);
-            stock.dealerTotal=this.stringToFloat(rawdata[11]);
-            stock.dealerTotalAmount= Math.round((stock.dealerTotal*stock.avg)*100)/100;
-            stock.fundBuy=this.stringToFloat(rawdata[8]);
-            stock.fundSell=this.stringToFloat(rawdata[9]);
-            stock.fundTotal=this.stringToFloat(rawdata[10]);
-            stock.fundTotalAmount= Math.round((stock.fundTotal*stock.avg)*100)/100;
-            // logger.debug(stock);
-            return stock;
-        });
+          let stockList: Array<Stock> = data.filter(rawdata=> stMap.has(rawdata[0])).map(rawdata=>{
+              let stock :StockDocument = stMap.get(rawdata[0]);
+              stock.foreignBuy =this.stringToFloat(rawdata[2]);
+              stock.foreignSell = this.stringToFloat(rawdata[3]);
+              stock.foreignTotal = this.stringToFloat(rawdata[4]);
+              stock.foreignTotalAmount= Math.round((stock.foreignTotal*stock.avg)*100)/100;
+              stock.dealerBuy=this.stringToFloat(rawdata[12])+ this.stringToFloat(rawdata[15]);
+              stock.dealerSell=this.stringToFloat(rawdata[13])+ this.stringToFloat(rawdata[16]);
+              stock.dealerTotal=this.stringToFloat(rawdata[11]);
+              stock.dealerTotalAmount= Math.round((stock.dealerTotal*stock.avg)*100)/100;
+              stock.fundBuy=this.stringToFloat(rawdata[8]);
+              stock.fundSell=this.stringToFloat(rawdata[9]);
+              stock.fundTotal=this.stringToFloat(rawdata[10]);
+              stock.fundTotalAmount= Math.round((stock.fundTotal*stock.avg)*100)/100;
+              // logger.debug(stock);
+              return stock;
+          });
 
-        await this.stockModel.bulkWrite(stockList.map(stock =>({
-            updateOne: {
-              filter: {_id: stock.id},
-              update: { foreignBuy: stock.foreignBuy,
-                foreignSell: stock.foreignSell,
-                foreignTotal: stock.foreignTotal,
-                foreignTotalAmount: stock.foreignTotalAmount,
-                dealerBuy: stock.dealerBuy,
-                dealerSell: stock.dealerSell,
-                dealerTotal: stock.dealerTotal,
-                dealerTotalAmount: stock.dealerTotalAmount,
-                fundBuy: stock.fundBuy,
-                fundSell: stock.fundSell,
-                fundTotal: stock.fundTotal,
-                fundTotalAmount: stock.fundTotalAmount,
+          await this.stockModel.bulkWrite(stockList.map(stock =>({
+              updateOne: {
+                filter: {_id: stock.id},
+                update: { foreignBuy: stock.foreignBuy,
+                  foreignSell: stock.foreignSell,
+                  foreignTotal: stock.foreignTotal,
+                  foreignTotalAmount: stock.foreignTotalAmount,
+                  dealerBuy: stock.dealerBuy,
+                  dealerSell: stock.dealerSell,
+                  dealerTotal: stock.dealerTotal,
+                  dealerTotalAmount: stock.dealerTotalAmount,
+                  fundBuy: stock.fundBuy,
+                  fundSell: stock.fundSell,
+                  fundTotal: stock.fundTotal,
+                  fundTotalAmount: stock.fundTotalAmount,
+                }
               }
-            }
-          })))
-          .then(res => {
-              logger.debug(JSON.stringify(res))
-            }).catch(e=> logger.error(e));
+            })))
+            .then(res => {
+                logger.debug(JSON.stringify(res))
+              }).catch(e=> logger.error(e));
+          }
+        
 
         return 
     }
