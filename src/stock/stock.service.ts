@@ -70,8 +70,8 @@ export class StockService {
         //         logger.error(error);
         //     });
         // }
-        
-        await this.stockModel.bulkWrite(stocks.map(stock =>({
+        if(stocks.length >0){
+          await this.stockModel.bulkWrite(stocks.map(stock =>({
             updateOne: {
               filter: { stockNo: stock.stockNo, stockDate: stock.stockDate },
               update: stock,
@@ -81,6 +81,8 @@ export class StockService {
           .then(res => {
               logger.debug(JSON.stringify(res))
             }).catch(e=> logger.error(e));
+        }
+        
 
         return 'success';
     }
@@ -110,15 +112,15 @@ export class StockService {
             stock.foreignBuy =this.stringToFloat(rawdata[2]);
             stock.foreignSell = this.stringToFloat(rawdata[3]);
             stock.foreignTotal = this.stringToFloat(rawdata[4]);
-            stock.foreignTotalAmount= Math.round((stock.foreignTotal*stock.avg)*100)/100;
+            stock.foreignTotalAmount= stock.foreignTotal? Math.round((stock.foreignTotal*stock.avg)*100)/100: 0;
             stock.dealerBuy=this.stringToFloat(rawdata[20]);
             stock.dealerSell=this.stringToFloat(rawdata[21]);
             stock.dealerTotal=this.stringToFloat(rawdata[22]);
-            stock.dealerTotalAmount= Math.round((stock.dealerTotal*stock.avg)*100)/100;
+            stock.dealerTotalAmount= stock.dealerTotal? Math.round((stock.dealerTotal*stock.avg)*100)/100: 0;
             stock.fundBuy=this.stringToFloat(rawdata[11]);
             stock.fundSell=this.stringToFloat(rawdata[12]);
             stock.fundTotal=this.stringToFloat(rawdata[13]);
-            stock.fundTotalAmount= Math.round((stock.fundTotal*stock.avg)*100)/100;
+            stock.fundTotalAmount= stock.fundTotal? Math.round((stock.fundTotal*stock.avg)*100)/100 :0 ;
             // logger.debug(stock);
             return stock;
         });
@@ -132,8 +134,8 @@ export class StockService {
         //         logger.error(error);
         //     });
         // }
-
-        await this.stockModel.bulkWrite(stockList.map(stock =>({
+        if(stockList.length >0){
+          await this.stockModel.bulkWrite(stockList.map(stock =>({
             updateOne: {
               filter: {_id: stock.id},
               update: { foreignBuy: stock.foreignBuy,
@@ -154,6 +156,8 @@ export class StockService {
           .then(res => {
               logger.debug(JSON.stringify(res))
             }).catch(e=> logger.error(e));
+        }
+        
 
         return
     }
@@ -168,7 +172,7 @@ export class StockService {
         // `https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&se=EW&t=D&d=${reqDate}&_=${new Date().getTime()}`;
         logger.log(apiUri);
         let fetchData = await this.fetchService.fetchData(apiUri);
-        logger.log(JSON.stringify(fetchData.data));
+        logger.log(fetchData.data.stat);
         if(fetchData.data!=null){
           if('很抱歉，沒有符合條件的資料!' === fetchData.data.stat){
             return 'false'
@@ -224,7 +228,7 @@ export class StockService {
         // `https://www.tpex.org.tw/web/stock/3insti/daily_trade/3itrade_hedge_result.php?l=zh-tw&se=EW&t=D&d=${reqDate}&_=${new Date().getTime()}`;
         logger.log(apiUri);
         let fetchData = await this.fetchService.fetchData(apiUri);
-        // logger.log(JSON.stringify(fetchData.data));
+        logger.log(fetchData.data.stat);
         if(fetchData.data != null){
           if('很抱歉，沒有符合條件的資料!' === fetchData.data.stat){
             return 'false'

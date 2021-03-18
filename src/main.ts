@@ -11,8 +11,8 @@ async function bootstrap() {
   const now = new Date();
   // const fetchService = app.get(FetchService);
   // await fetchService.fetchtpexOTCStock();
-  let startDate= `2021-03-01`//new Date()toISOString().substring(0,10);
-  let endDate= `${now.getFullYear()}-${now.getMonth()+1<10? now.getMonth()+1: now.getMonth()}-${now.getDate()}`
+  let startDate= `2020-10-12`//new Date()toISOString().substring(0,10);
+  let endDate= '2020-12-31'//`${now.getFullYear()}-${now.getMonth()+1<10? now.getMonth()+1: now.getMonth()}-${now.getDate()}`
   logger.debug(`endDate `+ endDate);
   let startArr = startDate.split('-');
   let endArr = endDate.split('-');
@@ -27,14 +27,17 @@ async function bootstrap() {
     startTime.setDate(startTime.getDate()+1); 
     logger.debug(`startTime `+ startTime);
 
-    // await stockService.syncStock(queryDate).then(async res=>{
-    //   await stockService.syncStock3instiAmount(queryDate)
-    // });
-    await sleep(3000);
-    await stockService.syncOtcStock(queryDate).then(async res=>{
-      await stockService.syncOTC3instiAmount(queryDate)
-    });
-    await sleep(3000);
+    await stockService.syncStock(queryDate)
+    await sleep(1000);
+    await stockService.syncOtcStock(queryDate)
+    await sleep(1000);
+
+    await stockService.syncStock3instiAmount(queryDate)
+    await sleep(1000);
+    await stockService.syncOTC3instiAmount(queryDate)
+    await sleep(2000);
+    
+    
 
   }
 
