@@ -11,8 +11,8 @@ async function bootstrap() {
   const now = new Date();
   // const fetchService = app.get(FetchService);
   // await fetchService.fetchtpexOTCStock();
-  let startDate= `2020-10-12`//new Date()toISOString().substring(0,10);
-  let endDate= '2020-12-31'//`${now.getFullYear()}-${now.getMonth()+1<10? now.getMonth()+1: now.getMonth()}-${now.getDate()}`
+  let startDate= now.toISOString().substring(0,10);
+  let endDate= now.toISOString().substring(0,10);
   logger.debug(`endDate `+ endDate);
   let startArr = startDate.split('-');
   let endArr = endDate.split('-');
