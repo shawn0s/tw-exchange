@@ -3,9 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { FetchService } from 'src/fetch/fetch.service';
 import{ rawData, stockData, stockT86} from './raw-data';
-import { Stock, StockDocument } from './stock.schema';
-import fs from 'fs';
-import { exception } from 'node:console';
+import { StockDocument } from './stock.schema';
+import { Stock } from './domain/stock';
 
 const logger = new Logger('StockService');
 

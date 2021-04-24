@@ -28,24 +28,20 @@ async function bootstrap() {
     logger.debug(`startTime `+ startTime);
 
     await stockService.syncStock(queryDate)
-    await sleep(1000);
     await stockService.syncOtcStock(queryDate)
-    await sleep(1000);
+
+    await sleep(2000);
 
     await stockService.syncStock3instiAmount(queryDate)
-    await sleep(1000);
     await stockService.syncOTC3instiAmount(queryDate)
-    await sleep(2000);
-    
-    
 
   }
 
   
 
   
-  
-  await app.close();
+  await app.listen(3000);
+  //await app.close();
 }
 bootstrap();
 
