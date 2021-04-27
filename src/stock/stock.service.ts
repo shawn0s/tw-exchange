@@ -299,7 +299,43 @@ export class StockService {
         return result;
     }
 
-    
+    async findByStockNo(stockNo: string): Promise<Stock[]>{
+      let res = await this.stockModel.find({stockNo: stockNo}).sort({date:-1}).exec();
+      return res;
+    }
+
+    async findStock3instiRank(startDate: string, endDate: string){
+      logger.log(`${startDate.substring(0,4)}-${startDate.substring(4,6)}-${startDate.substring(6,8)}T00:00:00.000Z`);
+      logger.log(`${endDate.substring(0,4)}-${endDate.substring(4,6)}-${endDate.substring(6,8)}T05:30:00.000Z`);
+
+      let dateStart: Date = new Date(`${startDate.substring(0,4)}-${startDate.substring(4,6)}-${startDate.substring(6,8)}T00:00:00.000Z`);
+      let dateEnd: Date = new Date(`${endDate.substring(0,4)}-${endDate.substring(4,6)}-${endDate.substring(6,8)}T05:30:00.000Z`);
+
+      // logger.log(`${dateStart.toISOString()}, ${dateEnd.toISOString()}`);
+      
+      const aggregate =[
+            { $match: {date: {
+            $gte: dateStart,
+            $lte: dateEnd
+        } } },
+        {
+            $group: {
+              _id: "$stockNo",
+              stockNo: { $first : "$stockNo" },
+              stockName: { $first : "$stockName" },
+              foreignTotalAmount: { $sum: "$foreignTotalAmount" },
+              fundTotalAmount: { $sum: "$fundTotalAmount" },
+              dealerTotalAmount: { $sum: "$dealerTotalAmount" },
+            }
+          },
+        { $sort : { foreignTotalAmount : -1 } },
+        { $limit: 30}
+        ];
+      logger.log(`${JSON.stringify(aggregate)}`);
+      let res = await this.stockModel.aggregate(aggregate).exec();
+      logger.log(res);
+      return res
+    }
 
 
 }

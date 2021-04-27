@@ -11,8 +11,8 @@ async function bootstrap() {
   const now = new Date();
   // const fetchService = app.get(FetchService);
   // await fetchService.fetchtpexOTCStock();
-  let startDate= now.toISOString().substring(0,10);
-  let endDate= now.toISOString().substring(0,10);
+  let startDate= '2021-04-26'//now.toISOString().substring(0,10);
+  let endDate= '2021-04-27'//now.toISOString().substring(0,10);
   logger.debug(`endDate `+ endDate);
   let startArr = startDate.split('-');
   let endArr = endDate.split('-');
@@ -20,27 +20,27 @@ async function bootstrap() {
   let startTime = new Date(parseInt(startArr[0]), parseInt(startArr[1])-1, parseInt(startArr[2]),13,30);
   let endTime = new Date(parseInt(endArr[0]), parseInt(endArr[1])-1, parseInt(endArr[2]),13,30);
 
-  while(startTime.getTime()<= endTime.getTime()){
-    logger.debug(`startTime `+ startTime);
-    let queryDate: string = startTime.toISOString().substring(0, 10);
-    logger.debug(`queryDate `+ queryDate);
-    startTime.setDate(startTime.getDate()+1); 
-    logger.debug(`startTime `+ startTime);
+  // while(startTime.getTime()<= endTime.getTime()){
+  //   logger.debug(`startTime `+ startTime);
+  //   let queryDate: string = startTime.toISOString().substring(0, 10);
+  //   logger.debug(`queryDate `+ queryDate);
+  //   startTime.setDate(startTime.getDate()+1); 
+  //   logger.debug(`startTime `+ startTime);
 
-    await stockService.syncStock(queryDate)
-    await stockService.syncOtcStock(queryDate)
+  //   await stockService.syncStock(queryDate)
+  //   await stockService.syncOtcStock(queryDate)
 
-    await sleep(2000);
+  //   await sleep(2000);
 
-    await stockService.syncStock3instiAmount(queryDate)
-    await stockService.syncOTC3instiAmount(queryDate)
+  //   await stockService.syncStock3instiAmount(queryDate)
+  //   await stockService.syncOTC3instiAmount(queryDate)
 
-  }
-
-  
+  // }
 
   
-  await app.listen(3000);
+
+  
+  // await app.listen(3000);
   //await app.close();
 }
 bootstrap();
