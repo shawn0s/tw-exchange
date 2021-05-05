@@ -11,14 +11,14 @@ async function bootstrap() {
   const now = new Date();
   // const fetchService = app.get(FetchService);
   // await fetchService.fetchtpexOTCStock();
-  let startDate= '2021-04-26'//now.toISOString().substring(0,10);
-  let endDate= '2021-04-27'//now.toISOString().substring(0,10);
-  logger.debug(`endDate `+ endDate);
-  let startArr = startDate.split('-');
-  let endArr = endDate.split('-');
+  // let startDate= now.toISOString().substring(0,10);
+  // let endDate= now.toISOString().substring(0,10);
+  // logger.debug(`endDate `+ endDate);
+  // let startArr = startDate.split('-');
+  // let endArr = endDate.split('-');
 
-  let startTime = new Date(parseInt(startArr[0]), parseInt(startArr[1])-1, parseInt(startArr[2]),13,30);
-  let endTime = new Date(parseInt(endArr[0]), parseInt(endArr[1])-1, parseInt(endArr[2]),13,30);
+  // let startTime = new Date(parseInt(startArr[0]), parseInt(startArr[1])-1, parseInt(startArr[2]),13,30);
+  // let endTime = new Date(parseInt(endArr[0]), parseInt(endArr[1])-1, parseInt(endArr[2]),13,30);
 
   // while(startTime.getTime()<= endTime.getTime()){
   //   logger.debug(`startTime `+ startTime);
@@ -40,11 +40,8 @@ async function bootstrap() {
   
 
   
-  // await app.listen(3000);
-  //await app.close();
+  await app.listen(3000);
+  // await app.close();
 }
 bootstrap();
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
