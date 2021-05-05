@@ -1,16 +1,15 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { FetchService } from './fetch/fetch.service';
-import { StockService } from './stock/stock.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const stockService = app.get(StockService);
-  const logger = new Logger('main');
-  const now = new Date();
-  // const fetchService = app.get(FetchService);
-  // await fetchService.fetchtpexOTCStock();
+  await app.listen(3000);
+  // const stockService = app.get(StockService);
+  // const logger = new Logger('main');
+  // const now = new Date();
+  // // const fetchService = app.get(FetchService);
+  // // await fetchService.fetchtpexOTCStock();
   // let startDate= now.toISOString().substring(0,10);
   // let endDate= now.toISOString().substring(0,10);
   // logger.debug(`endDate `+ endDate);
@@ -40,7 +39,7 @@ async function bootstrap() {
   
 
   
-  await app.listen(3000);
+  
   // await app.close();
 }
 bootstrap();
