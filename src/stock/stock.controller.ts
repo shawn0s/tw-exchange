@@ -40,10 +40,10 @@ export class StockController {
         const now = new Date();
         try {
             const startYear: number = startDate ? parseInt(startDate.substring(0,4))  : now.getFullYear();
-            const startMonth: number = startDate ? parseInt(startDate.substring(5,6))-1 : now.getMonth();
+            const startMonth: number = startDate ? parseInt(startDate.substring(4,6))-1 : now.getMonth();
             const startDay: number = startDate ? parseInt(startDate.substring(6,8)) : now.getDate();
             const endYear: number = endDate ? parseInt(endDate.substring(0,4)) : now.getFullYear();
-            const endMonth: number = endDate ? parseInt(endDate.substring(5,6))-1 : now.getMonth();
+            const endMonth: number = endDate ? parseInt(endDate.substring(4,6))-1 : now.getMonth();
             const endDay: number = endDate ? parseInt(endDate.substring(6,8)) : now.getDate();
             logger.debug(`startDate ${startYear} ${startMonth} ${startDay}, endDate ${endYear} ${endMonth} ${endDay}`);
             let startTime = new Date(startYear, startMonth, startDay, 13, 30);
