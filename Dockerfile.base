@@ -1,0 +1,8 @@
+# docker build -t e4e-vcs.deltaww.com:5005/dkp/backend/user:base -f ./Dockerfile.base .
+# docker push e4e-vcs.deltaww.com:5005/dkp/backend/user:base
+FROM node:12-alpine AS build-deps
+RUN apk update && apk add bash
+COPY package*.json /app/
+COPY yarn.lock /app/
+WORKDIR /app/
+RUN yarn 
